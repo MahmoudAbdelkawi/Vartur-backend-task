@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Products {
+  id        Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255)
+  picture   String   @db.Char(255)
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  published Boolean  @default(true)
+}
+
+
+model Category{
+  id        Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255) @unique
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+  picture   String   @db.Char(255)
+  published Boolean  @default(true)
+  parent_id Int?
+  // parent    Category? @relation("CategoryToCategory", fields: [parent_id], references: [id])
+  // children  Category[] @relation("CategoryToCategory")
+  Products     Products[]
+}
